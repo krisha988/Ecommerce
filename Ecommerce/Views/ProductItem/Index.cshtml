@@ -1,0 +1,240 @@
+﻿
+                @*
+                For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+                *@
+                @{
+                }
+                @model IEnumerable<Ecommerce.Models.ProductItem>
+                <div class="row">
+                    <div class="col-md-7">
+                        <div class="card">
+                            <div class="card-body">
+                                <table class="table">
+                                    <thead>
+
+                                    <th>Name</th>
+                                    <th>Code</th>
+                                    <th>CategoryName</th>
+                                    <th>Description</th>
+                                    <th>Price</th>
+                                    
+                                    <th> Action</th>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (ProductItem product in Model)
+                                        {
+                            <tr>
+                                <td>@product.ProductName</td>
+                                <td>@product.ProductCode</td>
+                                <td>@product.CategoryId</td>
+                                <td>@product.Description</td>
+                                <td>@product.UnitPrice</td>
+                                
+                                <td>
+                                    <button type="button" data-key="@product.ProductId" class="btn btn-warning btnedit">Edit</button>
+                                    <button type="button" data-key="@product.ProductId" class="btn btn-danger btndelete">Delete</button>
+
+                                </td>
+
+                               </tr>
+                                      
+                                        }
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-5">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row ">
+                                    <div class="col-md-3">
+                                        Name
+                                    </div>
+                                    <div class="col-md-9">
+                                        <input type="text" class="pname" />
+                                    </div>
+                                </div>
+                                <div class="row mt-2 ">
+                                    <div class="col-md-3">
+                                        Code
+                                    </div>
+                                    <div class="col-md-9">
+                                        <input type="text" class="pcode" />
+                                    </div>
+                                 </div>
+                                    <div class="row mt-2 ">
+                                        <div class="col-md-3">
+                                            CategoryName
+                                        </div>
+                            
+
+                                        <div class="col-md-9">
+                                            <input type="text" class="pcid" />
+                                        </div>
+                                </div>
+                                        <div class="row mt-2 ">
+                                            <div class="col-md-3">
+                                                Description
+                                            </div>
+                                            <div class="col-md-9">
+                                                <input type="text" class="pdescription" />
+                                            </div>
+                                </div>
+                                            <div class="row mt-2 ">
+                                                <div class="col-md-3">
+                                                    UnitPrice
+                                                </div>
+                                                <div class="col-md-9">
+                                                    <input type="text" class="pprice" />
+                                                </div>
+
+                                            </div>
+                                            <div class="row mt-2 ">
+                                                <div class="col-md-3">
+                                                    Thumbnail
+                                                </div>
+                                                <div class="col-md-9">
+                                                    <input type="text" class="pthumbnail" />
+                                                </div>
+
+                                            </div>
+                                            <div class="row mt-2">
+                                                <div class="col-md-3">
+                                                </div>
+                                                <div class="col-md-9">
+                                                    <button type="button" class="btn btn-success" id="btnsave">Save</button>
+                                                    <button type="button" class="btn btn-danger" id="btncancel">Cancel</button>
+                                                    <input type="hidden" value="0" class="hiddenbtn" />
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @section Scripts {
+                                    <script>
+                                        $(document).on('click', '#btnsave', function () {
+                                            var name = $('.pname').val();
+                                            var code = $('.pcode').val();
+                                            var categoryid = $('.pcid').val();
+                                            var description = $('.pdescription').val();
+
+                                            var unitprice = $('.pprice').val();
+                                            var thumbnail = $('.pthumbnail').val();
+                                            var id = $('.hiddenbtn').val();
+
+                                            if (name == '') {
+                                                alert("plese enter the productname:")
+                                            }
+                                            else if (code == '') {
+                                                alert("plese enter the productcode:")
+                                            }
+                                            else if (categoryid == '') {
+                                                alert("plese enter the categoryid:")
+                                            }
+                                            else if (description == '') {
+                                                alert("plese enter the unitprice:")
+                                            }
+                                            else if (unitprice == '') {
+                                                alert("plese enter the unitprice:")
+                                            }
+                                            else if (thumbnail == '') {
+                                                alert("plese enter the thumbnail:")
+                                            }
+
+                                            else {
+                                                $.ajax({
+                                                    method: 'get',
+                                                    url: '@Url.Action("Save", "ProductItem")?productName=' + name + '&productCode=' + code + '&productcId=' + categoryid + '&productdescription=' + description + '&productprice=' + unitprice + '&productthumb=' + thumbnail + '&hiddenid='+ id,
+                                                    contentType: "application/json;charset=utf-8",
+                                                    success: function (res) {
+                                                        alert(res.message)
+                                                        location.reload();
+
+                                                    },
+                                                    error: function (res) {
+                                                        
+                                                    }
+                                                });
+                                            }
+                                        })
+                                        $(document).on('click', '#btncancel', function () {
+
+                                            var ok = confirm("Are you sure want to cancel?")
+
+
+                                            if (ok == true) {
+                                                $('.pname').val('');
+                                                $('.pcode').val('');
+                                                $('.pcid').val('');
+                                                $('.pdescription').val('');
+                                                $('.pprice').val('');
+                                                $('.pthumbnail').val('');
+
+                                            }
+                                        });
+
+
+                                        $(document).on('click', '.btndelete', function () {
+                                            var id = $(this).data('key')
+
+
+                                            $.ajax({
+                                                method: 'get',
+                                                url: '@Url.Action("Delete", "ProductItem")?productId=' + id,
+                                                contentType: "application/json;charset=utf-8",
+                                                success: function (res) {
+                                                    alert(res.message)
+                                                    location.reload();
+
+                                                },
+                                                error: function (res) {
+                                                    debugger;
+                                                }
+                                            })
+                                        });
+
+                                        $(document).on('click', '.btnedit', function () {
+                                            var id = $(this).data('key')
+
+
+                                            $.ajax({
+                                                method: 'get',
+                                                url: '@Url.Action("GetById", "ProductItem")?productId=' + id,
+                                                contentType: "application/json;charset=utf-8",
+                                                success: function (res) {
+                                                    if(res.success==false)
+                                                    {
+                                                        alert(res.message);
+                                                    }
+                                                    else
+                                                    {
+                                                        debugger;
+                                                        var datas=res.data
+                                                            $('.pname').val(datas.productName);
+                                                            $('.pcode').val(datas.productCode);
+                                                            $('.pcid').val(datas.categoryId);
+                                                            $('.pdescription').val(datas.description);
+                                                            $('.pprice').val(datas.unitPrice);
+                                                            $('.pthumbnail').val(datas.thumbnail);
+                                                            $('.hiddenbtn').val(datas.productId)
+                       
+                                                    }
+
+                                                },
+                                                error: function (res) {
+                                                    debugger;
+                                                }
+                                            })
+                                        });
+                                       
+
+
+                                    </script>
+                                }
+ 

@@ -1,0 +1,211 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model IEnumerable<Ecommerce.Models.Category>
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <table class="table" id="categoryTable">
+                    <thead>
+                        <tr>
+                            <th>CategoryName</th>
+                            <th>CategoryCode</th>
+
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (Category item in Model)
+                        {
+                            <tr>
+                                <td>@item.CategoryName</td>
+                                <td>@item.CategoryCodee</td>
+
+                                <td>
+                                    <button type="button" data-key="@item.CategoryId" class="btn btn-warning btnedit">Edit</button>
+                                    <button type="button" data-key="@item.CategoryId" class="btn btn-danger btndelete">Delete</button>
+                                </td>
+                            </tr>
+                        } 
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="row ">
+                    <div class="col-md-3">
+                        Name
+                    </div>
+                    <div class="col-md-9">
+                        <input type="text" class="txtname" />
+                    </div>
+
+
+                </div>
+                <div class="row mt-2 ">
+                    <div class="col-md-3">
+                        Code
+                    </div>
+                    <div class="col-md-9">
+                        <input type="text" class="txtunit" />
+                    </div>
+
+
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-3">
+                    </div>
+                    <div class="col-md-9">
+                        <button type="button" class="btn btn-success" id="save">Save</button>
+                       
+                      
+                        <button type="button" class="btn btn-danger" id="cancel">Cancel</button>
+                        <input type="hidden" value="0" class="hiddenbtn" />
+                    </div>
+
+                </div>
+            </div>
+        </div>
+</div>
+        @section Scripts
+        {
+            <script>
+
+    /*        $(document).ready(function () {
+                function loadCategories() {
+                    $.ajax({
+                        url: '@Url.Action("GetCategory", "Category")',
+                        type: 'GET',
+                        success: function (data) {
+                            $('#categoryTable tbody').empty();
+                            $.each(data, function (index, item) {
+                               
+                                var row = `<tr>
+                                            <td>${item.CategoryName}</td>
+                                            <td>${item.CategoryCodee}</td>
+                                            <td>
+                                                <button class="btnedit" data-id="${item.CategoryId}">Edit</button>
+                                                <button class="btndelete" data-id="${item.CategoryId}">Delete</button>
+                                            </td>
+                                        </tr>`;
+                                $('#categoryTable tbody').append(row);
+                            });
+                        },
+                        error: function () {
+                            alert("Error loading categories");
+                        }
+                    });
+                }
+
+                loadCategories();
+
+                */
+
+
+
+
+
+
+
+
+
+                $(document).on('click', '#save', function () {
+                    debugger;
+                    var name = $('.txtname').val();
+                    var unit = $('.txtunit').val();
+                    var id = $('.hiddenbtn').val();
+                    if (name == '') {
+                        alert("plese enter the name:")
+                    }
+                    else if (unit == '') {
+                        alert("plese enter the code:")
+                    }
+                    else {
+                        $.ajax({
+                            method: 'get',
+                            url: '@Url.Action("Save", "Category")?categoryName=' + name + '&categoryCode=' + unit +'&hiddenid=' + id,
+                            contentType: "application/json;charset=utf-8",
+                            success: function (res) {
+                                alert(res.message)
+                            location.reload();
+
+                            },
+                            error: function (res) {
+                                debugger;
+                            }
+                        });
+                    }
+                })
+                $(document).on('click', '#cancel', function () {
+
+                    var ok = confirm("Are you sure want to cancel?")
+
+
+                    if (ok == true) {
+                        $('.txtname').val('');
+                        $('.txtunit').val('');
+
+                    }
+                });
+
+
+                $(document).on('click', '.btndelete', function () {
+                    var id = $(this).data('key')
+
+
+                    $.ajax({
+                        method: 'get',
+                        url: '@Url.Action("Delete", "Category")?categoryId=' + id,
+                        contentType: "application/json;charset=utf-8",
+                        success: function (res) {
+                            alert(res.message)
+                            location.reload();
+
+                        },
+                        error: function (res) {
+                            debugger;
+                        }
+                    })
+                });
+
+                $(document).on('click', '.btnedit', function () {
+
+                    var id = $(this).data('key')
+
+
+                    $.ajax({
+                        method: 'get',
+                        url: '@Url.Action("GetById", "Category")?categoryId=' + id,
+                        contentType: "application/json;charset=utf-8",
+                        success: function (res) {
+                            debugger;
+                            if (res.success == false) {
+                                alert("res.message");
+                            }
+                            else {
+                                var ddata = res.data
+                                $('.txtname').val(ddata.categoryName);
+                                $('.txtunit').val(ddata.categoryCodee);
+                                debugger;
+                                $('.hiddenbtn').val(ddata.categoryId);
+                                }
+                         },
+                    
+                         error: function (res) {
+                         debugger;
+                        }
+                      })
+                  });
+
+
+
+
+            </script>
+        }
